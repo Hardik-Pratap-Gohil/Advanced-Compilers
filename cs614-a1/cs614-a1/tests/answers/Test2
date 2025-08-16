@@ -1,0 +1,12 @@
+A.bar:
+p1.f2 = A.f2
+A.foo:
+this.f2 = A.f2
+B.bar:
+p1.f2 = A.f2
+P.foo:
+a1.foo = [A.foo]
+a2.foo = [A.foo]
+b1.foo = [A.foo]
+a1.bar = [A.bar, B.bar]
+b2.bar = [B.bar]

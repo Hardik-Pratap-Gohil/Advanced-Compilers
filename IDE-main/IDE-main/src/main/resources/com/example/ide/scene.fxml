@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ide.HelloController">
+    <top>
+        <VBox prefHeight="56.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <children>
+                <MenuBar>
+                    <menus>
+                        <Menu mnemonicParsing="false" text="File">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#closeFile" text="Close" />
+                                <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#open" text="Open" />
+                                <MenuItem mnemonicParsing="false" onAction="#newFile" text="New file" />
+                                <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#save" text="Save" />
+                                <MenuItem fx:id="saveAsButton" mnemonicParsing="false" onAction="#saveAs" text="Save as" />
+                                <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Edit">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Undo" />
+                                <MenuItem mnemonicParsing="false" text="Redo" />
+                                <MenuItem mnemonicParsing="false" text="Cut" />
+                                <MenuItem mnemonicParsing="false" text="Copy" />
+                                <MenuItem mnemonicParsing="false" text="Paste" />
+                                <MenuItem mnemonicParsing="false" text="Select All" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Build">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Assemble" onAction="#assemble"/>
+                                <MenuItem mnemonicParsing="false" text="Upload" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Tools">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Preferences" />
+                                <MenuItem mnemonicParsing="false" onAction="#toggleSerialMonitor" text="Serial Monitor" />
+                                <MenuItem mnemonicParsing="false" onAction="#toggleOutput" text="Output" />
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+                <ToolBar prefHeight="35.0" prefWidth="600.0">
+                    <items>
+                        <HBox prefHeight="26.0" prefWidth="580.0">
+                            <children>
+                                <Button mnemonicParsing="false" onAction="#newFile" prefHeight="26.0" prefWidth="48.0" text="New" />
+                                <Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" prefHeight="26.0" prefWidth="46.0" text="Save" />
+                                <ChoiceBox prefHeight="26.0" prefWidth="132.0" />
+                                <Region prefHeight="26.0" prefWidth="226.0" />
+                                <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="78.0" text="Assemble" onAction="#assemble"/>
+                                <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="60.0" text="Upload" />
+                            </children>
+                        </HBox>
+                    </items>
+                </ToolBar>
+            </children>
+        </VBox>
+    </top>
+    <bottom>
+        <VBox prefHeight="21.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox prefHeight="17.0" prefWidth="600.0">
+                    <children>
+                        <Region prefHeight="27.0" prefWidth="294.0" />
+                        <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="64.0" text="Connect" />
+                        <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="77.0" text="Disconnect" />
+                        <Label fx:id="statusLabel" prefHeight="27.0" prefWidth="169.0" text=" Status" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </bottom>
+   <center>
+      <SplitPane fx:id="mainSplitPane" dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+         <items>
+              <TabPane fx:id="tabPane" prefHeight="298.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+                  <tabs>
+                      <Tab text="Untitled.asm">
+                          <content>
+                              <TextArea fx:id="codeEditor" prefHeight="278.0" prefWidth="600.0" />
+                          </content>
+                      </Tab>
+                  </tabs>
+              </TabPane>
+            <TabPane fx:id="outputTabPane" prefHeight="110.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Output">
+                     <content>
+                        <TextArea fx:id="outputTextArea" prefHeight="200.0" prefWidth="200.0" />
+                     </content>
+                </Tab>
+                <Tab text="Serial Monitor">
+                     <content>
+                        <TextArea fx:id="serialMonitorTextArea" prefHeight="200.0" prefWidth="200.0" />
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+         </items>
+      </SplitPane>
+   </center>
+</BorderPane>

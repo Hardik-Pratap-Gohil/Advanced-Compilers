@@ -1,0 +1,48 @@
+CS614 Advanced Compilers (Spring 2025)
+======================================
+
+Assignment 1: Expose the Derefs (Due Feb 1, 11:55 PM)
+
+
+## SPECIFICATION
+
+Goal: Use JavaCC+JTB to write visitors that print the (set of) binding(s) for each field reference and (virtual) method call made in the program.
+
+### Provided inputs:
+    - This file (cs614-a1.txt)
+    - Grammar for input programs (a1java.jj)
+    - Public testcases and answers (inside "tests/")
+    - Checklist to be filled and submitted (checklist.txt)
+    - Sample Main.java (edit it to include calls to your visitors)
+
+### Output format:
+    - Consult the testcases and expected answers present in the "tests" directory.
+    - Ignore the main class.
+    - For each method in each other class (derived from "TypeDeclaration"), the first line should be the name of the method in the format "ClassName.MethodName:".
+    - After this, list the field and method references, followed by the set of resolved values, one per line as follows: "ObjectName.Reference = Reference(s)". Note that for a field reference the RHS would be a single value of the form "ClassName.FieldName", whereas for a method reference the RHS would be a set of the form [ClassName1.MethodName ClassName2.MethodName ...].
+    - The results for methods should be sorted in lexicographic order, while the references within each method should be printed in program order. In case of multiple methods in the RHS, the contents should again be sorted in lexicographic order.
+
+### Assumptions that you can make:
+    - All testcases would be valid Java programs, devoid of syntax errors, and parsable using the a1java grammar.
+    - Method overloading is ignored in this assignment (overriding is possible).
+
+## SUBMISSION INSTRUCTIONS (to be followed strictly):
+    1. Your submission on Moodle should be a file "rollnum-a1.zip", where "rollnum" is your roll number in small letters.
+    2. Upon unzipping the zip file, we should get a directory named "rollnum-a1", which contains the following:
+        a. Main.java, which reads the testcase from standard input, calls appropriate visitors, and prints on standard output
+        b. All your visitors inside a "visitors" directory
+        c. Other Java files and the "syntaxtree" directory as generated using JTB and JavaCC
+        d. Honestly and completely filled "checklist.txt"
+    3. Your submission should not have any .class or .jar files
+    4. "javac Main.java" should work, and (ideally) "java Main < test", where "test" is the path to a testcase file, should print the expected output on screen
+    5. For each testcase, we would redirect your output to a file and check it for exact equivalence with the expected output for that testcase; if the outputs match, you would get the marks for that testcase
+    6. Make sure you do not print any extra outputs; remember to comment out any debugging code that you use before submission.
+
+
+## PLAGIARISM NOTE:
+    This is an individual assignment. You are free to discuss with classmates publicly on Slack and ask your queries to the TAs or the Instructor in the class or in the office hours. However, you should neither look at the code of anybody else nor use/share the code written by anyone else (including sources from the Internet). Any violations should be reported proactively in the checklist file.
+
+    Any detected plagiarism (give and take equal) would be treated strictly as per the policy announced in the first class.
+
+    Plagiarism is a disservice to the teaching and learning process, and is a punishable offence at workplaces. Do the assignment honestly and enjoy learning the course.
+

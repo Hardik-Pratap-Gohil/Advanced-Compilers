@@ -1,0 +1,7 @@
+A.bar:
+p1.f2 = A.f2
+A.foo:
+a1.f1 = A.f1
+a1.bar = [A.bar]
+a1.f2 = A.f2
+a1.f2 = A.f2

@@ -1,0 +1,214 @@
+CS614 Advanced Compilers (Spring 2025)
+======================================
+
+Assignment 3 (Due Mar 22, 11:55 PM)
+
+
+## SPECIFICATION
+
+Goal: Use JavaCC+JTB to perform linear scan register allocation.
+
+1. Input Source program (we have the same language syntax as A2, apart from an addition of the max allowed number of registers at the top of each testcase).
+
+/*1*/
+class TC01 {
+  public static void main(String[] args) {
+    TestTC01 o;
+    int res;
+    o = new TestTC01();
+    res = o.foo();
+    System.out.println(res);
+  }
+}
+class TestTC01 {
+  public int foo() {
+    int a;
+    int b;
+    int x;
+    boolean e;
+    a = 1;
+    b = 2;
+    e = a <= b;
+    while(e) {
+      b = a + b;
+      e = b <= a;
+    }
+    b = b;
+    x = 2;
+    b = x;
+    return b;
+  }
+}
+
+2.1 APIs for getting liveness information
+
+This api provides the result of liveness analysis as a hashmap (See input-grammar/Main.java) that contains a mapping from Node to Set<String>. The result contains the set of variables that are live at that node i.e. the IN set. All the Statement Nodes can be used to query the hashmap, namely, PrintStatement, VarDeclaration, AssignmentStatement, ArrayAssignmentStatement, FieldAssignmentStatement, IfthenStatement, IfthenElseStatement, WhileStatement and LivenessQueryStatement. Additionally, for getting the liveness information at the return statement of a function, MethodDeclaration node must be used.
+
+# using MethodDeclaration node to access liveness information of return statement
+public Integer visit(MethodDeclaration n) {
+    if (resultMap.containsKey(n)) {
+        System.out.println("Liveness: " + resultMap.get(n));
+    }
+    ...
+}
+
+# input-grammar/Main.java prints the liveness for a given input program using the provided API.
+
+java Main < ../public-testcase/TC01.java 
+[1] VarDeclaration : []
+[2] VarDeclaration : []
+[3] AssignmentStatement : []
+[4] AssignmentStatement : [o]
+[5] PrintStatement : [res]
+[6] VarDeclaration : []
+[7] VarDeclaration : []
+[8] VarDeclaration : []
+[9] VarDeclaration : []
+[10] AssignmentStatement : []
+[11] AssignmentStatement : [a]
+[12] AssignmentStatement : [a, b]
+[13] WhileStatement : [a, b, e]
+[14] AssignmentStatement : [a, b]
+[15] AssignmentStatement : [a, b]
+[16] AssignmentStatement : [b]
+[17] AssignmentStatement : []
+[18] AssignmentStatement : [x]
+[19] Method Return : [b]
+
+2.2 Output Spec
+
+The final output must follow the following spec:
+- Static import:
+import static a3.Memory.*;
+
+This static import must be declared immediately after the register limit comment.
+
+- Register declaration:
+Object Rx;
+
+The registers must be declared as generic Object variables (instead of the regular VarDeclaration). You are free to choose any naming convention as long as it is supported by the grammar.
+
+- Register store
+Rx = Expression;
+
+The assignment to registers remains the same as normal assignment statement.
+
+- Register load
+((TYPE) Rx)
+
+Here TYPE is the type of the variable and Rx is the register.
+
+- Memory allocation
+alloca(SIZE);
+
+The number of spilled variables must be declared after all the register declarations; in case no variable was spilled the value of SIZE must be set to 0.
+
+- Memory store
+store(INDEX,Expression)
+
+INDEX represents the memory offset at which the expression must be stored.
+
+- Memory load
+((TYPE) load(INDEX))
+
+Here TYPE is the type of the variable and INDEX is the memory offset of that variable.
+
+3. Linear Scan Register Allocation
+
+3.1 Live Interval Computation: It has to be done using the program points obtained when visiting the AST using the Depth Fist Visitor, the provided API (ResultPrinter.java) contains this information.
+
+Live ranges (TC01.main):
+  o:   [4, 4]
+  res: [5, 5]
+
+Live ranges (TC01.foo):
+  a: [11, 15]
+  b: [12, 19]
+  e: [13, 13]
+  x: [18, 18]
+
+3.2 Linear Scan Register Allocation. The first line of the input program signifies the number of allowed registers; e.g. in TC01 we have one available register. The register allocation performed by LSRA is as follows:
+
+TC01.main:
+  o: R0
+  res: R0
+
+TC01.main:
+  a: spilled (index 1)
+  b: spilled (index 0)
+  e: R0
+  x: R0
+
+Time: 11  12  13  14  15  16  17  18  19
+a:    [---(spill)----------]  
+b:        [--(R1)-(spill)--------]  
+e:            [*] (R0)  
+x:                                [*] (R0)
+  
+Expected Program Output:
+
+/*1*/
+import static a3.Memory.*;
+
+class TC01 {
+  public static void main(String[] args) {
+    Object R0;
+    alloca(0);
+    R0 = new TestTC01();
+    R0 = ((TestTC01) R0).foo();
+    System.out.println(((int) R0));
+  }
+}
+
+class TestTC01 {
+  public int foo() {
+    Object R0;
+    alloca(2);
+    store(1, 1); // a = 1; --> a was spilled to 1
+    store(0, 2); // b = 2; --> b was spilled to 0
+    R0 = ((int) load(1)) <= ((int) load(0)); // e = a <= b;
+    while(((boolean) R0)) {
+      store(0, ((int) load(1)) + ((int) load(0))); // b = a + b;
+      R0 = ((int) load(0)) <= ((int) load(1)); // b <= a;
+    }
+    store(0, ((int) load(0))); // b = b;
+    R0 = 2; // x = 2
+    store(0, ((int) R0));  // b = x;
+    return ((int) load(0)); // return b;
+  }
+}
+
+## NOTES
+
+1. The type for the register must be Object.
+
+2. The output-grammar checks for the parsing of the resultant program (You can check for parsing by supplying the generated output of your assignment).
+
+3. The a3 folder will always be present in the directory where the output program is run from.
+
+4. For formal function parameters do not perform register allocation; they can be used directly as it is.
+
+5. You can assume that no testcases will use any fields or fields related operations.
+
+6. You can assume that no testcases will use any arrays or array related functions.
+
+7. You can assume that no testcases will use the this pointer.
+
+## SUBMISSION INSTRUCTIONS (to be followed strictly):
+    1. Your submission on Moodle should be a file "rollnum-a3.zip", where "rollnum" is your roll number in small letters.
+    2. Upon unzipping the zip file, we should get a directory named "rollnum-a3", which contains the following:
+        a. Main.java, which reads the testcase from standard input, calls appropriate visitors, and prints on standard output
+        b. All your visitors inside the "visitor" directory
+        c. Other Java files and the "syntaxtree" directory as generated using JTB and JavaCC
+        d. Honestly and completely filled "checklist.txt" (get the template from the previous assignments)
+    3. Your submission should not have any .class or .jar files
+    4. "javac Main.java" should work, and (ideally) "java Main < test", where "test" is the path to a testcase file, should print the expected output on screen
+    5. For each testcase, we would redirect your output to a file, compile it, and execute the generated bytecode. The program should compile (do not change class and method names), produce the same output as before. If it does, we would count the number of registers and spills in your generated program and match it with the expected output.
+    6. Make sure you do not print any extra outputs; remember to comment out any debugging code that you use before submission.
+
+
+## PLAGIARISM NOTE:
+    This is an individual assignment. You are free to discuss with classmates publicly on Slack and ask your queries to the TAs or the Instructor in the class or in the office hours. However, you should neither look at the code of anybody else nor use/share the code written by anyone else (including sources from the Internet). Any violations should be reported proactively in the checklist file.
+    Any detected plagiarism (give and take equal) would be treated strictly as per the policy announced in the first class.
+    Plagiarism is a disservice to the teaching and learning process, and is a punishable offence at workplaces. Do the assignment honestly and enjoy learning the course.
+
