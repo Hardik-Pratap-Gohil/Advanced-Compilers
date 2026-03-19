@@ -1,7 +1,0 @@
-A.foo:
-this.poke = A.poke
-a.poke = B.poke
-B.foo:
-this.poke = B.poke
-this.foo = [B.foo]
-a.foo = [B.foo]
