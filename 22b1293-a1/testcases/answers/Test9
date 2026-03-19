@@ -1,0 +1,2 @@
+IterativeFibonacci.generate:
+calculator.calculate = [FibonacciCalculator.calculate]

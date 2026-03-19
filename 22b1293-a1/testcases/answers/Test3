@@ -1,0 +1,5 @@
+Exec.exec:
+obj1.foo = [Even1.foo, Even2.foo, Odd1.foo, Odd2.foo]
+obj2.foo = [Even1.foo, Even2.foo, Odd1.foo, Odd2.foo]
+obj3.foo = [Even2.foo, Odd2.foo]
+obj4.foo = [Even2.foo, Odd2.foo]

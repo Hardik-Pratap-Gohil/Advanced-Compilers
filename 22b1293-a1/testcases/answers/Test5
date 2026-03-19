@@ -1,0 +1,19 @@
+A.bar:
+p1.f2 = A.f2
+A.foo:
+this.f2 = A.f2
+B.bar:
+p2.f2 = A.f2
+C.bar:
+p3.f3 = A.f3
+D.bar:
+p4.f4 = A.f4
+P.foo:
+a1.foo = [A.foo]
+a2.foo = [A.foo]
+a3.foo = [A.foo]
+b1.foo = [A.foo]
+a1.bar = [A.bar, B.bar, C.bar, D.bar]
+b2.bar = [B.bar, C.bar, D.bar]
+c1.bar = [C.bar, D.bar]
+d1.bar = [D.bar]

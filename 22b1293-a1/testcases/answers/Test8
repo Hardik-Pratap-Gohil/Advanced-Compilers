@@ -1,0 +1,6 @@
+A.foo:
+a.foo = [A.foo, B.foo, C.foo, D.foo, E.foo, F.foo]
+D.foo:
+d.foo = [D.foo, E.foo, F.foo]
+F.foo:
+a.foo = [A.foo, B.foo, C.foo, D.foo, E.foo, F.foo]
